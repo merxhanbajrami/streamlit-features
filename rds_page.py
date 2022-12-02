@@ -9,7 +9,6 @@ import psycopg2
 
 client = boto3.client('rds')
 databases = client.describe_db_instances()
-# st.write(databases)
 
 databases_list = ["None"]
 for el in databases["DBInstances"]:
@@ -30,14 +29,6 @@ if database_selected != "None":
                     host = db["Endpoint"]["Address"]
                     port = db["Endpoint"]["Port"]
                     database_engine = db["Engine"]
-
-            # engine = psycopg2.connect(
-            #    database="postgres",
-            #    user="postgres",
-            #    password="immuneeringv3test",
-            #    host="immuneering-v3-test-postgre.cverz3y5jpp2.eu-west-1.rds.amazonaws.com",
-            #    port='1889'
-            # )
 
             engine = psycopg2.connect(
                 database=database_engine,
@@ -60,9 +51,3 @@ if database_selected != "None":
             data = pd.read_sql_query(sql, engine)
             st.write("Data loaded:")
             st.write(data)
-
-            #print(engine)
-            #st.write(engine)
-
-
-# st.write(databases["DBInstances"])

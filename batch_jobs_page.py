@@ -15,7 +15,6 @@ def list_jobs_by_status(job_definition, job_queue):
     """
     client = boto3.client("batch")
     paginator = client.get_paginator("list_jobs")
-    print("---- paginator" + str(paginator))
 
     response_iterator = paginator.paginate(
         jobQueue=job_queue,
@@ -25,18 +24,14 @@ def list_jobs_by_status(job_definition, job_queue):
     jobs = {}  # 'status' => [jobs…]
     for page in response_iterator:
         for job in page["jobSummaryList"]:
-            # group by status
             jobs.setdefault(job["status"], []).append(job)
 
-    print("jobsss---" + str(jobs))
-    # st.write(jobs)
     return jobs
 
 
 def list_job_definitions():
     client = boto3.client("batch")
     job_definitions = client.describe_job_definitions()
-    # st.write(job_definitions)
     return job_definitions['jobDefinitions']
 
 
@@ -47,24 +42,12 @@ def list_job_queues():
 
 
 def unique(list1):
-    # initialize a null list
     unique_list = []
 
-    # traverse for all elements
     for x in list1:
-        # check if exists in unique_list or not
         if x not in unique_list:
             unique_list.append(x)
     return unique_list
-
-
-# JOB_QUEUE_ARN = "arn:aws:batch:eu-west-1:396587179375:job-queue/streamlit-boilerplate-job-queue"
-# JOB_DEFINITION_ARN = "arn:aws:batch:eu-west-1:396587179375:job-definition/streamlit-boilerplate-batch-job-definition:12"
-
-
-# boto_client = boto3.client("batch")
-# resp = boto_client.describe_job_queues()
-# queueNames = [queue['jobQueueName'] for queue in resp['jobQueues']]
 
 
 job_queue = st.selectbox("Select the job queue", (f"{el['jobQueueName']}" for el in list_job_queues()))
@@ -109,7 +92,6 @@ if submit:
     job_id = response["jobId"]
     st.success(f"Job '{job_id}' submitted successfully. ✅")
 
-# 11print("tipi i listes" + str(type(lista)))
 job_status = st.selectbox("Select status",
                           ('SUBMITTED', 'PENDING', 'RUNNABLE', 'STARTING', 'RUNNING', 'SUCCEEDED', 'FAILED'))
 
@@ -119,8 +101,6 @@ flag = False
 for key in lista.keys():
     if job_status == key:
         for el in lista[job_status]:
-            # st.write(el)
-            # st.write(lista[key])
             job_list.append(el)
             flag = True
 
